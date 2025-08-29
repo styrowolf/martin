@@ -136,9 +136,7 @@ env_logger.workspace = true
 futures.workspace = true
 geojson = { version = "0.24.2", optional = true }
 geojson-vt-rs = { git = "https://github.com/maxammann/geojson-vt-rs.git", optional = true }
-geozero = { git = "https://github.com/styrowolf/geozero.git", branch = "styrowolf/expose-mvt-internals", features = [
-    "with-mvt",
-], optional = true }
+geozero = { version = "0.14.0", features = ["with-mvt"], optional = true }
 itertools.workspace = true
 json-patch = { workspace = true, optional = true }
 lambda-web = { workspace = true, optional = true }

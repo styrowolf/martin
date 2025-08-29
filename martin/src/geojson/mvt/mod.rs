@@ -1,4 +1,5 @@
 mod geometry_encoding;
+mod mvt_commands;
 
 use geometry_encoding::encode_geom;
 use geozero::mvt::TagsBuilder;
