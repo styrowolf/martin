@@ -2585,7 +2585,7 @@ dependencies = [
 [[package]]
 name = "geojson-vt-rs"
 version = "0.1.1"
-source = "git+https://github.com/maxammann/geojson-vt-rs.git#d618a9deddd555660f15f51db85459280789783a"
+source = "git+https://github.com/styrowolf/geojson-vt-rs.git?branch=feat%2Fpreprocessed#ccaf80c826d3290b60a8048ee3bda192aabafb1c"
 dependencies = [
  "geojson",
  "serde_json",

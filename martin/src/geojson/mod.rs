@@ -4,6 +4,7 @@ use std::path::PathBuf;
 use std::sync::Arc;
 
 use async_trait::async_trait;
+use geojson_vt_rs::PreprocessedGeoJSON;
 use geozero::mvt::Message as _;
 use martin_tile_utils::{Format, TileCoord, TileInfo};
 use std::fs::File;
@@ -25,8 +26,7 @@ pub use config::GeoJsonConfig;
 pub struct GeoJsonSource {
     id: String,
     path: PathBuf,
-    geojson: Arc<geojson::GeoJson>,
-    tile_options: geojson_vt_rs::TileOptions,
+    preprocessed: Arc<PreprocessedGeoJSON>,
     tilejson: TileJSON,
     tile_info: TileInfo,
 }
@@ -44,6 +44,7 @@ impl GeoJsonSource {
     fn new(
         id: String,
         path: PathBuf,
+        max_zoom: u8,
         tile_options: geojson_vt_rs::TileOptions,
     ) -> FileResult<Self> {
         let tile_info = TileInfo::new(Format::Mvt, martin_tile_utils::Encoding::Uncompressed);
@@ -53,6 +54,8 @@ impl GeoJsonSource {
         // TODO: better error handling
         let geojson = geojson::GeoJson::from_reader(geojson_file)
             .map_err(|e| FileError::InvalidFilePath(path.clone()))?;
+
+        let preprocessed = PreprocessedGeoJSON::new(&geojson, max_zoom, &tile_options);
 
         let bounds = match &geojson {
             geojson::GeoJson::Geometry(geometry) => geojson_to_bounds(&geometry.value),
@@ -85,14 +88,13 @@ impl GeoJsonSource {
             vector_layers: geojson_to_vector_layer(&id, &geojson),
             bounds: bounds,
             minzoom: 0,
-            maxzoom: 24, // from geojson-vt-rs max_zoom
+            maxzoom: max_zoom,
         };
 
         return Ok(Self {
             id,
             path,
-            geojson: Arc::new(geojson),
-            tile_options,
+            preprocessed: Arc::new(preprocessed),
             tilejson,
             tile_info,
         });
@@ -126,16 +128,7 @@ impl Source for GeoJsonSource {
         xyz: TileCoord,
         _url_query: Option<&UrlQuery>,
     ) -> MartinResult<TileData> {
-        // TODO: get from source (self)
-        let tile = geojson_vt_rs::geojson_to_tile(
-            &self.geojson,
-            xyz.z,
-            xyz.x,
-            xyz.y,
-            &self.tile_options,
-            true,
-            true,
-        );
+        let tile = self.preprocessed.generate_tile(xyz.z, xyz.x, xyz.y);
         let mut builder = LayerBuilder::new(self.id.clone(), 4096);
         for feature in &tile.features.features {
             builder.add_feature(feature);

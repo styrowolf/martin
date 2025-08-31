@@ -134,7 +134,7 @@ enum-display = { workspace = true, optional = true }
 env_logger.workspace = true
 futures.workspace = true
 geojson = { version = "0.24.2", optional = true }
-geojson-vt-rs = { git = "https://github.com/maxammann/geojson-vt-rs.git", optional = true }
+geojson-vt-rs = { git = "https://github.com/styrowolf/geojson-vt-rs.git", branch = "feat/preprocessed", optional = true }
 geozero = { git = "https://github.com/styrowolf/geozero.git", branch = "styrowolf/expose-mvt-internals", features = [
     "with-mvt",
 ], optional = true }
