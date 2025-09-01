@@ -2594,7 +2594,7 @@ dependencies = [
 [[package]]
 name = "geozero"
 version = "0.14.0"
-source = "git+https://github.com/styrowolf/geozero.git?branch=styrowolf%2Fexpose-mvt-internals#f27cf3ed080adb465db12a54456f28707d36180f"
+source = "git+https://github.com/styrowolf/geozero.git?branch=mvt-reimpl#17c33bb872aad7af0e7c56fbb7c3170c94287e40"
 dependencies = [
  "dup-indexer",
  "geo-types",
